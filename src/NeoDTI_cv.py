@@ -7,15 +7,15 @@ Created on Mon Jan 15 16:02:48 2018
 Cross validation for NeoDTI.
 """
 import numpy as np
-from sets import Set
+
 import pickle
 import tensorflow as tf
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import average_precision_score
-from sklearn.cross_validation import KFold
+from sklearn.module_selection import KFold
 from utils import *
 from tflearn.activations import relu
-from sklearn.cross_validation import train_test_split,StratifiedKFold
+from sklearn.module_selection import train_test_split,StratifiedKFold
 import sys
 from optparse import OptionParser
 
@@ -279,7 +279,7 @@ def train_and_evaluate(DTItrain, DTIvalid, DTItest, graph, verbose=True, num_ste
                                         learning_rate: lr})
             #every 25 steps of gradient descent, evaluate the performance, other choices of this number are possible
             if i % 25 == 0 and verbose == True:
-                print 'step',i,'total and dtiloss',tloss, dtiloss
+                print ('step',i,'total and dtiloss',tloss, dtiloss)
 
                 pred_list = []
                 ground_truth = []
@@ -298,13 +298,13 @@ def train_and_evaluate(DTItrain, DTIvalid, DTItest, graph, verbose=True, num_ste
                         ground_truth.append(ele[2])
                     test_auc = roc_auc_score(ground_truth, pred_list)
                     test_aupr = average_precision_score(ground_truth, pred_list)
-                print 'valid auc aupr,', valid_auc, valid_aupr, 'test auc aupr', test_auc, test_aupr
+                print ('valid auc aupr,', valid_auc, valid_aupr, 'test auc aupr', test_auc, test_aupr)
     return best_valid_auc, best_valid_aupr, test_auc, test_aupr
 
 test_auc_round = []
 test_aupr_round = []
 for r in xrange(10):
-    print 'sample round',r+1
+    print ('sample round',r+1)
     if opts.t == 'o':
         dti_o = np.loadtxt(network_path+'mat_drug_protein.txt')
     else:
@@ -325,7 +325,7 @@ for r in xrange(10):
     elif opts.r == 'all':
         negative_sample_index = np.random.choice(np.arange(len(whole_negative_index)),size=len(whole_negative_index),replace=False)
     else:
-        print 'wrong positive negative ratio'
+        print ('wrong positive negative ratio')
         break
 
     data_set = np.zeros((len(negative_sample_index)+len(whole_positive_index),3),dtype=int)
@@ -358,7 +358,7 @@ for r in xrange(10):
         elif opts.r == 'all':
             negative_sample_index_test = np.random.choice(np.arange(len(whole_negative_index_test)),size=whole_negative_index_test,replace=False)
         else:
-            print 'wrong positive negative ratio'
+            print ('wrong positive negative ratio')
             break
         data_set_test = np.zeros((len(negative_sample_index_test)+len(whole_positive_index_test),3),dtype=int)
         count = 0
